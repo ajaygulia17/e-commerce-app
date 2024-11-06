@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce_app.entity.Product;
+import com.e_commerce_app.exception.ResourceNotFoundException;
 import com.e_commerce_app.repository.ProductRepository;
 
 @Service
@@ -19,10 +20,17 @@ public class ProductService {
 	}
 	
 	public Product findProductById(Long id){
-		return productRepository.findById(id).orElseThrow();
+		return productRepository.findById(id).
+				orElseThrow(() -> new ResourceNotFoundException("No Product found with Id: " + id));
 	}
 	
 	public Product saveProduct(Product product) {
 		return productRepository.save(product);
+	}
+	
+	public void deleteProduct(Long id) {
+		productRepository.findById(id).
+			orElseThrow(() -> new ResourceNotFoundException("No Product found with Id: " + id));
+		productRepository.deleteById(id);
 	}
 }
