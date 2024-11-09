@@ -1,0 +1,9 @@
+package com.e_commerce_app.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.e_commerce_app.entity.Cart;
+
+public interface CartRepository extends JpaRepository<Cart, Long>{
+	Cart findByUserId(Long userId);
+}
