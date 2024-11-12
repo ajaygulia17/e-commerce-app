@@ -1,5 +1,6 @@
 package com.e_commerce_app.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -23,7 +24,7 @@ public class Cart {
 	private User user;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<CartItem> items;
+	private List<CartItem> items = new ArrayList<CartItem>();
 
 	public Long getId() {
 		return id;
