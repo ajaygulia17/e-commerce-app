@@ -1,6 +1,7 @@
 package com.e_commerce_app.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce_app.entity.Cart;
+import com.e_commerce_app.entity.CartItem;
 import com.e_commerce_app.entity.Order;
 import com.e_commerce_app.repository.OrderRepository;
 import com.e_commerce_app.repository.UserRepository;
@@ -21,6 +23,7 @@ public class OrderService {
 	@Autowired
 	CartService cartService;
 	
+	@Autowired
 	UserRepository userRepository;
 	
 	public Order createOrder(Long userId) {
@@ -36,7 +39,10 @@ public class OrderService {
 		
 		Order order = new Order();
 		order.setUser(userRepository.findById(userId).get());
-		order.setItems(cart.getItems());
+		
+		List<CartItem> detachedItems = new ArrayList<>(cart.getItems());
+		
+		order.setItems(detachedItems);
 		order.setOrderDate(new Date());
 		order.setTotalAmount(totalAmount);
 		order.setStatus(Order.OrderStatus.PENDING);
@@ -44,7 +50,7 @@ public class OrderService {
 		return orderRepository.save(order);
 	}
 	
-	public List<Order> getOrderByUser(Long userId){
+	public List<Order> getOrderByUserId(Long userId){
 		return orderRepository.findByUserId(userId);
 	}
 }

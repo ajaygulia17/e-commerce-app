@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,14 +17,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
+@Table(name="orders")
 public class Order {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private User user;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -41,11 +42,11 @@ public class Order {
 	}
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		id = id;
 	}
 
 	public User getUser() {
@@ -90,7 +91,7 @@ public class Order {
 
 	public Order(Long id, User user, List<CartItem> items, BigDecimal totalAmount, Date orderDate, OrderStatus status) {
 		super();
-		Id = id;
+		id = id;
 		this.user = user;
 		this.items = items;
 		this.totalAmount = totalAmount;
