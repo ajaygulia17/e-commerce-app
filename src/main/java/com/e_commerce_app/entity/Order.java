@@ -36,7 +36,7 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 
-	private enum OrderStatus {
+	public enum OrderStatus {
 		PENDING, COMPLETED, CANCELED, FAILED
 	}
 
