@@ -4,13 +4,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.e_commerce_app.entity.Cart;
+import com.e_commerce_app.dto.CartDTO;
+import com.e_commerce_app.dto.OrderDTO;
 import com.e_commerce_app.entity.CartItem;
 import com.e_commerce_app.entity.Order;
+import com.e_commerce_app.mapper.OrderMapper;
 import com.e_commerce_app.repository.OrderRepository;
 import com.e_commerce_app.repository.UserRepository;
 
@@ -26,8 +29,8 @@ public class OrderService {
 	@Autowired
 	UserRepository userRepository;
 	
-	public Order createOrder(Long userId) {
-		Cart cart = cartService.getCartByUserId(userId);
+	public OrderDTO createOrder(Long userId) {
+		CartDTO cart = cartService.getCartByUserId(userId);
 		
 		if (cart==null || cart.getItems().isEmpty()) {
 			throw new IllegalArgumentException("Cart is empty or doesn't exist");
@@ -47,10 +50,14 @@ public class OrderService {
 		order.setTotalAmount(totalAmount);
 		order.setStatus(Order.OrderStatus.PENDING);
 		
-		return orderRepository.save(order);
+		Order savedOrder = orderRepository.save(order);
+		return OrderMapper.toOrderDto(savedOrder);
 	}
 	
-	public List<Order> getOrderByUserId(Long userId){
-		return orderRepository.findByUserId(userId);
+	public List<OrderDTO> getOrderByUserId(Long userId){
+		List<Order> orders = orderRepository.findByUserId(userId);
+		List<OrderDTO> orderDtos = orders.stream().map((order) -> OrderMapper.toOrderDto(order)).collect(Collectors.toList());
+		
+		return orderDtos;
 	}
 }

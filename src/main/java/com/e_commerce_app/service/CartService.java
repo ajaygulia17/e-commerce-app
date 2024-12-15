@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce_app.dto.CartDTO;
+import com.e_commerce_app.dto.UserDTO;
 import com.e_commerce_app.entity.Cart;
 import com.e_commerce_app.entity.CartItem;
 import com.e_commerce_app.entity.Product;
+import com.e_commerce_app.mapper.CartMapper;
 import com.e_commerce_app.repository.CartItemRepository;
 import com.e_commerce_app.repository.CartRepository;
 import com.e_commerce_app.repository.UserRepository;
@@ -27,11 +30,13 @@ public class CartService {
 	@Autowired
 	UserRepository userRepository;
 	
-	public Cart getCartByUserId(Long userId) {
-		return cartRepository.findByUserId(userId);
+	public CartDTO getCartByUserId(Long userId) {
+		Cart cart =  cartRepository.findByUserId(userId);
+		return CartMapper.toCartDto(cart);
+		
 	}
 	
-	public Cart addToCart(Long userId, Long productId, int quantity) {
+	public CartDTO addToCart(Long userId, Long productId, int quantity) {
 		
 		Cart cart = cartRepository.findByUserId(userId);
 		if (cart==null) {
@@ -66,16 +71,19 @@ public class CartService {
 			cartItemRepository.save(item);
 			cart = cartRepository.save(cart);
 		}		
-		return cart;
+		
+		
+		return CartMapper.toCartDto(cart);
 	}
 	
-	public Cart removeFromCart(Long userId, Long CartItemId) {
+	public CartDTO removeFromCart(Long userId, Long CartItemId) {
 		Cart cart = cartRepository.findByUserId(userId);
 		cart.getItems().removeIf(cartItem -> cartItem.getId().equals(CartItemId));
-		return cartRepository.save(cart);
+		Cart updatedCart = cartRepository.save(cart);
+		return CartMapper.toCartDto(updatedCart);
 	}
 	
-	public Cart updateCart(Long userId, Long cartItemId, int quantity) {
+	public CartDTO updateCart(Long userId, Long cartItemId, int quantity) {
 		Cart cart = cartRepository.findByUserId(userId);
 		if (cart!=null) {
 			cart.getItems().forEach(cartItem -> {
@@ -87,6 +95,6 @@ public class CartService {
 			});
 			cart = cartRepository.save(cart);
 		}
-		return cart;
+		return CartMapper.toCartDto(cart);
 	}
 }

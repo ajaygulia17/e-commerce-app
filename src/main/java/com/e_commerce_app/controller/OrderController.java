@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.e_commerce_app.entity.Order;
+import com.e_commerce_app.dto.OrderDTO;
 import com.e_commerce_app.service.OrderService;
 
 @RestController
@@ -22,14 +22,14 @@ public class OrderController {
 	OrderService orderService;
 	
 	@PostMapping("/{userId}")
-	public ResponseEntity<Order> createOrder(@PathVariable Long userId){
-		Order savedOrder = orderService.createOrder(userId);		
+	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long userId){
+		OrderDTO savedOrder = orderService.createOrder(userId);		
 		return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{userId}")
 	public ResponseEntity<List> getOrder(@PathVariable Long userId){
-		List<Order> orderList = orderService.getOrderByUserId(userId);
+		List<OrderDTO> orderList = orderService.getOrderByUserId(userId);
 		return new ResponseEntity<>(orderList, HttpStatus.OK);
 	}
 }
